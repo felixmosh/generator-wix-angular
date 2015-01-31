@@ -32,12 +32,13 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <base target="_parent" />
     <title><%= appname %></title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <meta name="robots" content="noindex, nofollow">
     <link rel="stylesheet" href="bower_components/wix-ui-lib2/ui-lib.min.css"/>
-    <% if (!dashboardApp) { %><link rel="stylesheet" href="${staticBaseUrl}services/third-party/fonts/Helvetica/fontFace.css"><% } %>
+    <link rel="stylesheet" href="${staticBaseUrl}services/third-party/fonts/Helvetica/fontFace.css">
     <!-- process-tags prefix('${staticsUrl}') -->
     <!-- build:css({.tmp,app}) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
@@ -50,51 +51,31 @@
       ENABLE_MOCKS = ${enableMocks};
     </script>
     <!-- #end -->
-    <% if (dashboardApp) { %>
-    #parse('views/my-account/embeds_head.vm')
-    <% } else { %>
     ${newRelicEndUserHeader}
-    <% } %>
-    <% if(backOfficeApp) { %>
-    <style wix-style ng-non-bindable>
-      body {
-        color: {{style.textColor color-5}};
-        background-color: {{style.backgroundColor color-1}};
-      }
-    </style>
-    <% } %>
+    <script type="text/javascript" src="//sslstatic.wix.com/services/js-sdk/1.41.0/js/Wix.js"></script>
+      
+   
   </head>
   <body>
-    <% if (dashboardApp) { %>
-    #parse('views/my-account/embeds_body_top.vm')
-
-    <wix-dashboard-site-menu dashboard-selected-item="dashboard"></wix-dashboard-site-menu>
-    <div wix-dashboard-app>
-      <!-- Add your site or application content here -->
-      <div class="container" ng-include="'views/main.html'"></div>
-    </div>
-    <% } else { %>
+   
     <!-- Add your site or application content here -->
-    <div class="container" ng-include="'views/main.html'"></div>
-    <% } %>
-    <script type="text/javascript" src="//sslstatic.wix.com/services/js-sdk/1.41.0/js/Wix.js"></script>
+    <div class="container" ng-include="'views/settings.html'"></div>
+    
     <!-- process-tags prefix('${staticsUrl}') -->
     <script src="bower_components/jquery/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
-    <% if (!dashboardApp) { %><script src="bower_components/angular-translate/angular-translate.js"></script><% } %>
+    <script src="bower_components/angular-translate/angular-translate.js"></script>
     <script src="bower_components/angular-i18n/angular-locale_${locale}.js"></script>
     <script src="scripts/locale/messages_${locale}.js"></script>
-
-    <!-- build:js scripts/modules.js -->
+    <!-- build:js scripts/modulesSettings.js -->
     <script src="bower_components/uri.js/src/URI.js"></script>
-    <script src="bower_components/wix-ui-lib2/ui-lib.min.js"></script>
     <script src="bower_components/wix-angular/dist/wix-angular.js"></script>
+    <script src="bower_components/wix-ui-lib2/ui-lib.min.js"></script>
     <!-- endbuild -->
-    <!-- build:js({.tmp,app}) scripts/scripts.js -->
-    <% if (backOfficeApp) { %><script src="scripts/service/wix.js"></script><% } %>
-    <script src="scripts/app.js"></script>
-    <script src="scripts/controllers/main.js"></script>
-
+    <!-- build:js({.tmp,app}) scripts/scriptsSettings.js -->
+    <script src="scripts/service/wix.js"></script>
+    <script src="scripts/settingsApp.js"></script>
+    <script src="scripts/controllers/settings.js"></script>
     <!-- endbuild --><!-- scripts -->
     <!-- end-process-tags -->
 

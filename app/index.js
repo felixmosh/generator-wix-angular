@@ -146,6 +146,9 @@ Generator.prototype.askForModules = function askForModules() {
       value: 'bowerComponent',
       name: 'bower component',
     }, {
+      value: 'backOfficeApp',
+      name: 'wix-app with BackOffice',
+    }, {
       value: 'dashboardApp',
       name: 'wix-dashboard application',
     }, {
@@ -158,23 +161,23 @@ Generator.prototype.askForModules = function askForModules() {
     this.bowerComponent = (props.modules === 'bowerComponent');
     this.dashboardApp = (props.modules === 'dashboardApp');
     this.dashboardWidget = (props.modules === 'dashboardWidget');
-
+    this.backOfficeApp = (props.modules === 'backOfficeApp');
     var angMods = [this.simplename + 'Translations', 'wixAngular'];
 
     if (this.dashboardApp || this.dashboardWidget) {
       angMods.push('wixDashboardFramework');
     }
-
     if (this.dashboardApp) {
       this.env.options.dashboardApp = true;
     }
-
+    if (this.backOfficeApp) {
+      this.env.options.backOfficeApp = true;
+    }
     if (this.dashboardWidget) {
       this.env.options.dashboardWidget = true;
     } else {
       this._hooks.splice(-1);
     }
-
     if (this.bowerComponent) {
       this.env.options.bowerComponent = true;
     }
@@ -191,6 +194,16 @@ Generator.prototype.readIndex = function readIndex() {
   this.indexFile = this.engine(this.read('../../templates/common/index.html').replace(/\$\{/g, '(;$};)'),
       this).replace(/\(;\$\};\)/g, '${');
 };
+Generator.prototype.readSettings = function readSettings() {
+  this.settingsFile = this.engine(this.read('../../templates/common/settings.html').replace(/\$\{/g, '(;$};)'),
+      this).replace(/\(;\$\};\)/g, '${');
+};
+
+Generator.prototype.readBackOffice = function readBackOffice() {
+  this.backOfficeFile = this.engine(this.read('../../templates/common/backOffice.html').replace(/\$\{/g, '(;$};)'),
+      this).replace(/\(;\$\};\)/g, '${');
+};
+
 
 // Waiting a more flexible solution for #138
 Generator.prototype.bootstrapFiles = function bootstrapFiles() {
@@ -283,8 +296,12 @@ Generator.prototype.appJs = function appJs() {
 };*/
 
 Generator.prototype.createIndexHtml = function createIndexHtml() {
-  if (this.dashboardApp || !this.dashboardWidget) {
+  if (this.dashboardApp || !this.dashboardWidget ) {
     this.write(path.join(this.appPath, 'index.vm'), this.indexFile);
+  }
+  if (this.backOfficeApp) {
+    this.write(path.join(this.appPath, 'settings.vm'), this.settingsFile);
+    this.write(path.join(this.appPath, 'backOffice.vm'), this.backOfficeFile);
   }
 };
 
@@ -298,11 +315,28 @@ Generator.prototype.packageFiles = function () {
   replace = this.read('../../templates/common/replace.private.conf.js', 'utf8').replace(/\$\{/g, '(;$};)');
   this.write('replace.private.conf.js', this.engine(replace, this).replace(/\(;\$\};\)/g, '${'));
 
-  if (this.dashboardApp || !this.dashboardWidget) {
+if (this.backOfficeApp) {
+    this.classedName = 'Main';
+    this.cameledName = 'main';
+    this.template('../../templates/common/backOffice/main.haml', 'app/views/main.haml');
+
+    this.classedName = 'Settings';
+    this.cameledName = 'settings';
+    this.template('../../templates/common/settings.haml', 'app/views/settings.haml');
+
+    this.classedName = 'BackOffice';
+    this.cameledName = 'backOffice';
+    this.template('../../templates/common/backOffice.haml', 'app/views/backOffice.haml');
+    
+    this.template('../../templates/javascript/service/wix.js', 'app/scripts/service/wix.js');
+    this.template('../../templates/common/backOffice/app.css', 'app/styles/app.css');
+    this.template('../../templates/common/backOffice/settings.css', 'app/styles/settings.css');
+  } else if (this.dashboardApp || !this.dashboardWidget) {
     this.classedName = 'Main';
     this.cameledName = 'main';
     this.template('../../templates/common/main.haml', 'app/views/main.haml');
   }
+  
 
   this.template('../../templates/common/gitignore', '.gitignore');
   this.template('../../templates/common/_bower.json', 'bower.json');

@@ -1,0 +1,23 @@
+%div{:"ng-controller" => "<%= classedName %>Controller as <%= cameledName %>"}
+  %h1 Welcome!
+  %p{"ng-show" => "!instanceId"}
+    To get started create an app instance on
+    %a{:href => "http://dev.wix.com"} dev.wix.com
+    and set
+    %a{:href => "http://localhost:9000/index.html"} http://localhost:9000/index.html
+    as main app endpoint and
+    %a{:href => "http://localhost:9000/settings.html"} http://localhost:9000/settings.html
+    as settings endpoint
+  %p{"ng-show" => "instanceId"}
+    %b> Widget instance ID
+    \: 
+    %br/
+    {{instanceId}}
+    %br/ 
+    
+    = succeed ":" do
+      %b Instance : {{instance}}
+    %br/
+    
+  %p.message{"ng-show" => "message"}
+    Settings have been updated

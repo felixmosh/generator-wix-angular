@@ -1,0 +1,57 @@
+%header.box{:"ng-controller" => "<%= classedName %>Controller as <%= cameledName %>"}
+  .logo
+    %i.logo-on-header.simple-yo-svg-font-icons-wix-logo
+  .loggedOut
+    %p{:translate => "description"}
+    .login-panel
+      %p.create-account{:translate => "create"}
+      %button.submit.uilib-btn.connect {{'connect' | translate}}
+  .loggedIn.hidden
+    %p
+      {{'connected' | translate:params}}
+      %br/
+      %a.disconnect-account {{'disconnect' | translate}}
+    .premium-panel
+      %p.premium-features {{'premium' | translate}}
+      %button.submit.uilib-btn.upgrade {{'upgrade' | translate}}
+%div{"wix-ctrl" => "Accordion"}
+  .acc-pane
+    %h3 General Settings:
+    .acc-content
+      %ul.list
+        %li{"wix-label" => "Image Visibility:"}
+          %div{:style => "width:144px", "wix-ctrl" => "Dropdown", "wix-model" => "imageVisibility"}
+            %option{:value => "show"} Show Images
+            %option{:value => "hide"} Hide Images
+            %option{:value => "showhover"} Show Images on Hover
+        %li{"wix-label" => "Number of images:"}
+          %div{"wix-ctrl" => "Slider", "wix-model" => "numOfImages", "wix-options" => "{ preLabel:'0', postLabel:'100'}"}
+        %li{"wix-label" => "Show Icons:"}
+          %div{"wix-ctrl" => "Checkbox", "wix-model" => "isIconShown"}
+  .acc-pane
+    %h3 Color Settings (wix-params demo):
+    .acc-content
+      %ul.list
+        %li{"wix-label" => "Text Color:"}
+          %div{"wix-ctrl" => "ColorPickerWithOpacity", "wix-options" => "{startWithColor:'color-5'}", "wix-param" => "textColor"}
+        %li{"wix-label" => "Background Color:"}
+          %div{"wix-ctrl" => "ColorPickerWithOpacity", "wix-options" => "{startWithColor:'color-1'}", "wix-param" => "backgroundColor"}
+  .acc-pane
+    %h3 Sync Options
+    .acc-content
+      %p How many images to sync ?
+      %div{"wix-ctrl" => "Radio", "wix-model" => "imagesToSync"}
+        %div{"data-radio-value" => "sync10"} Sync 10 images
+        %div{"data-radio-value" => "sync25"} Sync 25 images
+        %div{"data-radio-value" => "sync50"} Sync 50 images
+      %p Sync Meta Data ?
+      %div{"wix-ctrl" => "Checkbox:{ postLabel:'Image Meta'}", "wix-model" => "imageMeta"}
+      %div{"wix-ctrl" => "Checkbox:{ postLabel:'Image Alt'}", "wix-model" => "imageAlt"}
+      %div{"wix-ctrl" => "Checkbox:{ postLabel:'Image Link'}", "wix-model" => "imageLink"}
+  .acc-pane
+    %h3 Button Group
+    .acc-content
+      %div{"wix-ctrl" => "ButtonGroup", "wix-model" => "adsSize"}
+        %button{:value => "mini"} Mini
+        %button{:value => "medium"} Medium
+        %button{:value => "large"} Large

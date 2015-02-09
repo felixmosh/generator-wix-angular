@@ -5,10 +5,14 @@ var angularUtils = require('../util.js');
 var spawn = require('child_process').spawn;
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
+var shell = require('shelljs');
 
 var Generator = module.exports = function Generator(args, options) {
   yeoman.generators.Base.apply(this, arguments);
-  this.argument('appname', { type: String, required: false });
+  this.argument('appname', {
+    type: String,
+    required: false
+  });
   this.appname = this.appname || path.basename(process.cwd());
   this.appname = this.appname.replace(/-statics?$/, '');
   this.simplename = this.appname.replace(/^wix-/, '');
@@ -28,7 +32,7 @@ var Generator = module.exports = function Generator(args, options) {
   if (typeof this.env.options.appPath === 'undefined') {
     try {
       this.env.options.appPath = require(path.join(process.cwd(), 'bower.json')).appPath;
-    } catch (e) {}
+    } catch ( e ) {}
     this.env.options.appPath = this.env.options.appPath || 'app';
   }
 
@@ -73,13 +77,15 @@ var Generator = module.exports = function Generator(args, options) {
   });
 
   this.hookFor('wix-angular:dashboard-widget', {
-    args: [this._.slugify(this._.humanize(this.simplename))+'-widget'],
+    args: [this._.slugify(this._.humanize(this.simplename)) + '-widget'],
     options: {}
   });
 
-  this.on('end', function () {
+  this.on('end', function() {
     if (this.options['skip-install']) {
-      this.installDependencies({ skipInstall: this.options['skip-install'] });
+      this.installDependencies({
+        skipInstall: this.options['skip-install']
+      });
       if (!this.options['skip-install']) {
         this.runInstall('bundle', '--deployment');
       }
@@ -87,14 +93,16 @@ var Generator = module.exports = function Generator(args, options) {
       this.prompt({
         type: 'confirm',
         name: 'install',
-        message: 'Would you like me to run '+chalk.yellow.bold('bower/npm/bundle install?'),
+        message: 'Would you like me to run ' + chalk.yellow.bold('bower/npm/bundle install?'),
         default: true
-      }, function (props) {
-        this.installDependencies({ skipInstall: !props.install });
-        if (props.install) {
-          this.runInstall('bundle', '--deployment');
-        }
-      }.bind(this));
+      }, function(props) {
+          this.installDependencies({
+            skipInstall: !props.install
+          });
+          if (props.install) {
+            this.runInstall('bundle', '--deployment');
+          }
+        }.bind(this));
     }
   });
 
@@ -138,23 +146,23 @@ Generator.prototype.askForModules = function askForModules() {
     type: 'list',
     name: 'modules',
     default: 'none',
-    message: 'Which super powers would you like?',
+    message: 'Which super power would you like?',
     choices: [{
       value: 'none',
       name: 'none',
-    }, {
+      }, {
       value: 'bowerComponent',
       name: 'bower component',
-    }, {
+      }, {
       value: 'dashboardApp',
       name: 'wix-dashboard application',
-    }, {
+      }, {
       value: 'dashboardWidget',
       name: 'wix-dashboard widget',
     }]
   }];
 
-  this.prompt(prompts, function (props) {
+  this.prompt(prompts, function(props) {
     this.bowerComponent = (props.modules === 'bowerComponent');
     this.dashboardApp = (props.modules === 'dashboardApp');
     this.dashboardWidget = (props.modules === 'dashboardWidget');
@@ -180,23 +188,101 @@ Generator.prototype.askForModules = function askForModules() {
     }
 
     if (angMods.length) {
-      this.env.options.angularDeps = "'" + angMods.join("', '") +"'";
+      this.env.options.angularDeps = "'" + angMods.join("', '") + "'";
     }
 
     cb();
   }.bind(this));
 };
 
+
+Generator.prototype.requestPackgeDetails = function requestPackgeDetails() {
+  
+  var that = this;
+
+  function decorateValue (value, limit) {
+    var limit = limit || 50;
+    return that._.escape(value.length > limit ? value.substring(0, limit) + '...' : value);
+  };
+
+  function validateEmail (email) {
+    var pattern = new RegExp(/^([a-z0-9_\.\+-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/);
+    var result = pattern.test(email) ? email : promptsDefaults.email;
+    return result;
+  }
+
+  var promptsDefaults = {
+    owner: that.getGitConfigValue('user.name') || 'Shahar Talmi',
+    email: that.getGitConfigValue('user.email') || 'shahart@wix.com',
+    groupId: 'com.wixpress.cx'
+  };
+
+  var groupIdChoices = {
+    'com.wixpress.cx': 'Consumer Experience',
+    'com.wixpress.shoutout': 'Shout Out',
+    'com.wixpress.appmarket': 'App Market',
+    'com.wixpress.ecommerce': 'eCommerce'
+  };
+
+  var choices = that._.values(groupIdChoices);
+
+  var promptForOwner = {
+    input: 'input',
+    name: 'owner',
+    message: 'Owner name',
+    default: promptsDefaults.owner
+  };
+
+  var promptForEmail = {
+    input: 'input',
+    name: 'email',
+    message: 'Owner email',
+    default: promptsDefaults.email
+  };
+
+  var promptForGroupId = {
+    type: 'list',
+    choices: choices,
+    name: 'groupName',
+    message: 'Group ID',
+    default: promptsDefaults.groupId
+  };
+
+  var promptForDescription = {
+    type: 'input',
+    name: 'description',
+    message: 'Project description',
+    default: that._.slugify(this.basename).replace('-', ' ')
+  }
+
+  var done = that.async();
+  that.prompt ([promptForOwner, promptForEmail, promptForGroupId, promptForDescription], function (answers) {
+    var owner = {};
+    owner.owner = decorateValue(answers.owner);
+    owner.email = decorateValue(validateEmail(answers.email));
+    owner.description = decorateValue(answers.description, 100);
+    for(var key in groupIdChoices) {
+      if(groupIdChoices[key] === answers.groupName) {
+        owner.groupId = key;
+        break;    
+      }
+    }
+
+    that.ownerCredentials = owner;
+    done();
+  });
+}
+
 Generator.prototype.readIndex = function readIndex() {
   this.indexFile = this.engine(this.read('../../templates/common/index.html').replace(/\$\{/g, '(;$};)'),
-      this).replace(/\(;\$\};\)/g, '${');
+    this).replace(/\(;\$\};\)/g, '${');
 };
 
 // Waiting a more flexible solution for #138
 Generator.prototype.bootstrapFiles = function bootstrapFiles() {
   var sass = this.compassBootstrap;
   var files = [];
-  var source = 'styles/' + ( sass ? 's' : '' ) + 'css/';
+  var source = 'styles/' + (sass ? 's' : '') + 'css/';
 
   if (this.bootstrap && !sass) {
     files.push('bootstrap.css');
@@ -210,7 +296,7 @@ Generator.prototype.bootstrapFiles = function bootstrapFiles() {
     files.push('main.' + (sass ? 's' : '') + 'css');
   }
 
-  files.forEach(function (file) {
+  files.forEach(function(file) {
     this.copy(source + file, 'app/styles/' + file);
   }.bind(this));
   /*
@@ -228,7 +314,7 @@ Generator.prototype.bootstrapFiles = function bootstrapFiles() {
 
 Generator.prototype.bootstrapJS = function bootstrapJS() {
   if (!this.bootstrap) {
-    return;  // Skip if disabled.
+    return; // Skip if disabled.
   }
 
   // Wire Twitter Bootstrap plugins
@@ -288,9 +374,28 @@ Generator.prototype.createIndexHtml = function createIndexHtml() {
   }
 };
 
-Generator.prototype.packageFiles = function () {
+Generator.prototype.getGitConfigValue = function (cmd) {
+  
+  var result = null;
+  if (shell.which('git')) {
+    result = shell.exec('git config --get ' + cmd, { silent: true }).output.trim()
+  }
+  
+  return result;
+}
+
+
+Generator.prototype.packageFiles = function packageFiles() {
+  
+  var owner = this.ownerCredentials;
+
   var pom = this.read('../../templates/common/pom.xml', 'utf8').replace(/\$\{/g, '(;$};)');
-  this.write('pom.xml', this.engine(pom, this).replace(/\(;\$\};\)/g, '${'));
+  this.write('pom.xml', this.engine(pom, this)
+    .replace(/\(;\$\};\)/g, '${')
+    .replace('{{project-owner}}', owner.owner)
+    .replace('{{project-owner-email}}', owner.email)
+    .replace('{{project-owner-groupId}}', owner.groupId)
+    .replace('{{project-owner-description}}', owner.description));
 
   var replace = this.read('../../templates/common/replace.conf.js', 'utf8').replace(/\$\{/g, '(;$};)');
   this.write('replace.conf.js', this.engine(replace, this).replace(/\(;\$\};\)/g, '${'));
@@ -310,11 +415,12 @@ Generator.prototype.packageFiles = function () {
   this.template('../../templates/common/Gruntfile.js', 'Gruntfile.js');
   this.template('../../templates/common/karma.conf.js', 'karma.conf.js');
   this.template('../../templates/common/scenarios.js', 'test/e2e/spec/main-page.spec.js');
-  this.copy('../../templates/common/project.sublime-project', this._.slugify(this._.humanize(this.simplename))+'.sublime-project');
+  this.copy('../../templates/common/project.sublime-project', this._.slugify(this._.humanize(this.simplename)) + '.sublime-project');
   this.template('../../templates/javascript/mock/server-api.js', 'test/mock/server-api.js');
+
 };
 
-Generator.prototype.imageFiles = function () {
+Generator.prototype.imageFiles = function() {
   this.sourceRoot(path.join(__dirname, 'templates'));
   this.directory('images', 'app/images', true);
 };

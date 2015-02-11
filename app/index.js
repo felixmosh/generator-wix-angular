@@ -6,6 +6,7 @@ var spawn = require('child_process').spawn;
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var shell = require('shelljs');
+var storage = require('node-persist');
 
 var Generator = module.exports = function Generator(args, options) {
   yeoman.generators.Base.apply(this, arguments);
@@ -195,10 +196,14 @@ Generator.prototype.askForModules = function askForModules() {
   }.bind(this));
 };
 
-
 Generator.prototype.requestPackgeDetails = function requestPackgeDetails() {
   
   var that = this;
+  var STORAGE_SETTINGS_KEY = 'wix_angular_settings';
+  
+  storage.initSync({
+    dir: '../wix-angular-storage'
+  });
 
   function decorateValue (value, limit) {
     var limit = limit || 50;
@@ -211,21 +216,24 @@ Generator.prototype.requestPackgeDetails = function requestPackgeDetails() {
     return result;
   }
 
-  var promptsDefaults = {
-    owner: that.getGitConfigValue('user.name') || 'Shahar Talmi',
-    email: that.getGitConfigValue('user.email') || 'shahart@wix.com',
-    groupId: 'com.wixpress.cx'
+  function validateGroupId (groupId) {
+    var prefix = 'com.wixpress.';
+    if(!that._.startsWith(groupId, prefix)) {
+      groupId = [prefix, groupId.replace(/ /g, '.')].join('');
+    }
+    return groupId;
+  }
+
+  var promptsDefaults = storage.getItem(STORAGE_SETTINGS_KEY);
+  if(promptsDefaults === undefined) {
+    promptsDefaults = {
+      owner: that.getGitConfigValue('user.name') || 'Shahar Talmi',
+      email: that.getGitConfigValue('user.email') || 'shahart@wix.com',
+      groupId: 'com.wixpress.cx'
+    };
   };
-
-  var groupIdChoices = {
-    'com.wixpress.cx': 'Consumer Experience',
-    'com.wixpress.shoutout': 'Shout Out',
-    'com.wixpress.appmarket': 'App Market',
-    'com.wixpress.ecommerce': 'eCommerce'
-  };
-
-  var choices = that._.values(groupIdChoices);
-
+  promptsDefaults.description = that._.slugify(this.basename).replace('-', ' ');
+  
   var promptForOwner = {
     input: 'input',
     name: 'owner',
@@ -241,9 +249,8 @@ Generator.prototype.requestPackgeDetails = function requestPackgeDetails() {
   };
 
   var promptForGroupId = {
-    type: 'list',
-    choices: choices,
-    name: 'groupName',
+    type: 'input',
+    name: 'groupId',
     message: 'Group ID',
     default: promptsDefaults.groupId
   };
@@ -252,7 +259,7 @@ Generator.prototype.requestPackgeDetails = function requestPackgeDetails() {
     type: 'input',
     name: 'description',
     message: 'Project description',
-    default: that._.slugify(this.basename).replace('-', ' ')
+    default: promptsDefaults.description
   }
 
   var done = that.async();
@@ -261,15 +268,12 @@ Generator.prototype.requestPackgeDetails = function requestPackgeDetails() {
     owner.owner = decorateValue(answers.owner);
     owner.email = decorateValue(validateEmail(answers.email));
     owner.description = decorateValue(answers.description, 100);
-    for(var key in groupIdChoices) {
-      if(groupIdChoices[key] === answers.groupName) {
-        owner.groupId = key;
-        break;    
-      }
-    }
-
+    owner.groupId = decorateValue(validateGroupId(answers.groupId));
+    
     that.ownerCredentials = owner;
+    storage.setItem(STORAGE_SETTINGS_KEY, owner)
     done();
+    
   });
 }
 
@@ -392,10 +396,10 @@ Generator.prototype.packageFiles = function packageFiles() {
   var pom = this.read('../../templates/common/pom.xml', 'utf8').replace(/\$\{/g, '(;$};)');
   this.write('pom.xml', this.engine(pom, this)
     .replace(/\(;\$\};\)/g, '${')
-    .replace('{{project-owner}}', owner.owner)
-    .replace('{{project-owner-email}}', owner.email)
-    .replace('{{project-owner-groupId}}', owner.groupId)
-    .replace('{{project-owner-description}}', owner.description));
+    .replace('{{projectOwner}}', owner.owner)
+    .replace('{{projectOwnerEmail}}', owner.email)
+    .replace('{{projectOwnerGroupId}}', owner.groupId)
+    .replace('{{projectOwnerDescription}}', owner.description));
 
   var replace = this.read('../../templates/common/replace.conf.js', 'utf8').replace(/\$\{/g, '(;$};)');
   this.write('replace.conf.js', this.engine(replace, this).replace(/\(;\$\};\)/g, '${'));

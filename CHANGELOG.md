@@ -1,3 +1,71 @@
+<a name="v0.1.88"></a>
+### v0.1.88 (2015-02-12)
+
+
+#### Bug Fixes
+
+* **app:**
+  * test setup in default configuration ([2bebccbd](http://github.com/shahata/generator-wix-angular/commit/2bebccbdd15d177805440b6d1ec84cc38a2b4678))
+  * serve files from correct place ([fe2bad04](http://github.com/shahata/generator-wix-angular/commit/fe2bad0417b3138fa2788c17abcf7eb5be5f3e91))
+  * include bootstrap images for css/scss ([e88dba43](http://github.com/shahata/generator-wix-angular/commit/e88dba43f2e714d69bca366cade453f49a24b62c), closes [#196](http://github.com/shahata/generator-wix-angular/issues/196))
+  * allow normal javascript to be created ([c8190b55](http://github.com/shahata/generator-wix-angular/commit/c8190b55284e8c1570cc8fafdc8723250f43829b), closes [#329](http://github.com/shahata/generator-wix-angular/issues/329), [#316](http://github.com/shahata/generator-wix-angular/issues/316))
+  * conditional include of jquery ([bc1e68e3](http://github.com/shahata/generator-wix-angular/commit/bc1e68e30450edc16145b934487f6df5eaaddcd8), closes [#362](http://github.com/shahata/generator-wix-angular/issues/362))
+* **bootstrap:** some plugins have ordering dependencies ([3da4a130](http://github.com/shahata/generator-wix-angular/commit/3da4a1301e0b744c7a6054fafff26fff16b6442b))
+* **build:**
+  * use grunt-newer for styles and jshint ([b1eeb68a](http://github.com/shahata/generator-wix-angular/commit/b1eeb68a8290aee930887fc473034ee7f8e2ccc3))
+  * standardize comments and comment out uglify:dist ([d5d3e458](http://github.com/shahata/generator-wix-angular/commit/d5d3e458e70d054707c70d058454fdd3d94070fe), closes [#455](http://github.com/shahata/generator-wix-angular/issues/455))
+  * only include sass if sass is selected ([597b8b5c](http://github.com/shahata/generator-wix-angular/commit/597b8b5cfab77b78e7f6091140beda2eeee0ed54), closes [#449](http://github.com/shahata/generator-wix-angular/issues/449))
+  * remove references to global yeomanConfig ([a0f16e26](http://github.com/shahata/generator-wix-angular/commit/a0f16e265729586802121c0fe3111f974e5145ec))
+  * update to grunt-contrib-connect 0.5.0 ([67c0ebf0](http://github.com/shahata/generator-wix-angular/commit/67c0ebf081889658a33bc690c530c3c8bc8a2c12))
+  * update to grunt-contrib-connect 0.4.0 ([368ad7f9](http://github.com/shahata/generator-wix-angular/commit/368ad7f9a16be0ee67e5182be581669017788f16))
+* **css:** remove merge conflicts ([d558af35](http://github.com/shahata/generator-wix-angular/commit/d558af351c8a531132ce064a461bc038e0710b25))
+* **docs:**
+  * Add coffeescript=false to readme ([abd7dc38](http://github.com/shahata/generator-wix-angular/commit/abd7dc38be0cf511307c784f30d59c9fdcaea3e2))
+  * fixed typo in readme ([a967907c](http://github.com/shahata/generator-wix-angular/commit/a967907cf523bac752b3fa9ea6363767d8855162))
+* **gen:**
+  * script paths use forward slashes ([40aa61dc](http://github.com/shahata/generator-wix-angular/commit/40aa61dcc1bf31918bea3d2ce9a84c93554aa64a), closes [#410](http://github.com/shahata/generator-wix-angular/issues/410))
+  * remove extra "App" from service spec files ([4053f11f](http://github.com/shahata/generator-wix-angular/commit/4053f11f800280569f5b7396ad015f0a6bcc7b49))
+  * options should have descriptions ([da001832](http://github.com/shahata/generator-wix-angular/commit/da001832dbdb268b3bf38f359c72b40c401273e4))
+* **generator:** add app modules dependency to app ([a45b71c9](http://github.com/shahata/generator-wix-angular/commit/a45b71c95c18deb85ff7a1538c0b0744e4faa508), closes [#230](http://github.com/shahata/generator-wix-angular/issues/230))
+* **styles:** update path to icon images ([8daad4f2](http://github.com/shahata/generator-wix-angular/commit/8daad4f2de9dbde4fcc810527da7c9607e1db8d4))
+* **svgFont:**
+  * change import of svg font in sass main file ([000b6dc8](http://github.com/shahata/generator-wix-angular/commit/000b6dc8231be4f5feb9e9e822a70d367e5a8ee2))
+  * change import of svg font in sass main file ([5cd266b3](http://github.com/shahata/generator-wix-angular/commit/5cd266b3a21ca0a120ad066876110c9082d86455))
+* **template:** remove redundant closing tag ([d1e560e0](http://github.com/shahata/generator-wix-angular/commit/d1e560e0675ecb70e6c4b59cf4de9df461434a31), closes [#441](http://github.com/shahata/generator-wix-angular/issues/441))
+* **templates:**
+  * Gruntfile indentation ([6f7d17e2](http://github.com/shahata/generator-wix-angular/commit/6f7d17e2a0f1f7f9f8cac3157beb07b82e8cf400))
+  * take out semicolons in coffeescript ([e38124ee](http://github.com/shahata/generator-wix-angular/commit/e38124eeb369b7741adc263f1763c618a918ee65))
+  * correct coffee provider template ([86aefe5d](http://github.com/shahata/generator-wix-angular/commit/86aefe5da49abe82e054666641f8ee4bdc8d555e))
+  * value generator should use value template ([67d0c5ad](http://github.com/shahata/generator-wix-angular/commit/67d0c5ad5cbc58a2dfcfd8f3db1f45be21afe357))
+* **test:** update tests to match service files ([c30464c3](http://github.com/shahata/generator-wix-angular/commit/c30464c3a5216169026c23a6fea23d273bd0b948), closes [#338](http://github.com/shahata/generator-wix-angular/issues/338), [#354](http://github.com/shahata/generator-wix-angular/issues/354))
+* **views:** correct path for sub views ([0568e744](http://github.com/shahata/generator-wix-angular/commit/0568e74446c5a8e28d2cea1a9a9a5886be190d7d), closes [#359](http://github.com/shahata/generator-wix-angular/issues/359))
+
+
+#### Features
+
+* **app:**
+  * added wix-angular and mocks support ([fcf5535f](http://github.com/shahata/generator-wix-angular/commit/fcf5535ff380b30fca29c01a25ee41d709a44d61))
+  * imagemin handles gifs ([9341eb9b](http://github.com/shahata/generator-wix-angular/commit/9341eb9b710b95c95407dc54ed4af6aa4a496426))
+  * run unit tests when test scripts are changed ([94af0b51](http://github.com/shahata/generator-wix-angular/commit/94af0b510982b05c5a1939966e96aeccce087500))
+  * update to angular 1.2.0 ([77082c6b](http://github.com/shahata/generator-wix-angular/commit/77082c6b8d1dda76579f1970a270dffc359f027f))
+  * reload grunt server when gruntfile is updated ([50c6abb9](http://github.com/shahata/generator-wix-angular/commit/50c6abb9cce09a149253ceb8496feca813a71136))
+  * upgrade to Bootstrap 3.0.1 ([59f4b1ba](http://github.com/shahata/generator-wix-angular/commit/59f4b1ba73842b758174ad44a7da60af4f4db63f))
+* **build:**
+  * compile only changed coffeescript files in watch task ([4196e379](http://github.com/shahata/generator-wix-angular/commit/4196e37912993ae37812fa19d9378d8b8d2cc9da), closes [#425](http://github.com/shahata/generator-wix-angular/issues/425))
+  * deprecate server in favor of serve ([ef056319](http://github.com/shahata/generator-wix-angular/commit/ef0563192a9e3fc834ae97e7ec68470bcfdf56eb))
+* **gen:**
+  * add image file as example ([b161c298](http://github.com/shahata/generator-wix-angular/commit/b161c2982d86df1bb3de44cd9fa8aee05fc66ff3))
+  * allow app names to have custom suffix ([09f0f7b3](http://github.com/shahata/generator-wix-angular/commit/09f0f7b3a8c3264b7527bc9fed8c709becec99eb))
+  * add option to not add to index ([486ee146](http://github.com/shahata/generator-wix-angular/commit/486ee14660ac51b7cfcb4b7de50135833954f193))
+* **svgFont:** Adding svg font including an example on the demo page ([e2bc01f1](http://github.com/shahata/generator-wix-angular/commit/e2bc01f1e5e81229d7496c10b9143af7b6362fcc), closes [#4](http://github.com/shahata/generator-wix-angular/issues/4))
+* **widget:** use widget directive in dev ([05331f2f](http://github.com/shahata/generator-wix-angular/commit/05331f2f742fe5e71a121c29afa63a0f3a950d50))
+
+
+#### Breaking Changes
+
+* `grunt server` is being deprecated
+ ([ef056319](http://github.com/shahata/generator-wix-angular/commit/ef0563192a9e3fc834ae97e7ec68470bcfdf56eb))
+
 <a name="v0.6.0"></a>
 ## v0.6.0 (TBD)
 

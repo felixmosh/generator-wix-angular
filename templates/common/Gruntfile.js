@@ -27,6 +27,14 @@ module.exports = function (grunt) {
     local: 'http://local.pizza.wixpress.com:<%%= connect.options.port %>/'
   });
 
+  try {
+    require('./Gruntfile.private.js')(grunt); //override stuff locally
+  } catch (err) {
+    if (err.code !== 'MODULE_NOT_FOUND') {
+      throw (err);
+    }
+  }
+
   //Follow this URL for instructions on how to override built-in definitions:
   //https://github.com/wix/wix-gruntfile/blob/master/README.md
 };

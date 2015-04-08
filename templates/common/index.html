@@ -95,9 +95,9 @@
     </script>
     <!-- #end -->
     <script>
-      angular.module('<%= scriptAppName %>').config(function (wixAngularProvider) {
-        wixAngularProvider.setStaticsUrl('${staticsUrl}');
-        wixAngularProvider.setExperiments(${experiments});
+      angular.module('<%= scriptAppName %>').config(function (wixAngularTopologyProvider, experimentManager) {
+        wixAngularTopologyProvider.setStaticsUrl('${staticsUrl}');
+        experimentManager.setExperiments(${experiments});
       });
     </script>
     <% if (dashboardApp) { %>

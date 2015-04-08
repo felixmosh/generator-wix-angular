@@ -9,6 +9,7 @@ describe('<%= _.camelize(appname) %>App Main Page', function () {
 
   beforeEach(function () {
     mainPage = new MainPage();
+    experimentManager.setExperiments({});
     browser.addMockModule('<%= scriptAppName %>Mocks', function () {});
   });
 

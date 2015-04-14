@@ -2,12 +2,10 @@
 <!-- #if( false )
   Prerequisites from server model:
   --------------------------------
-  ${locale}, ${debug}, ${secured}, ${experiments},
+  ${locale}, ${debug}, ${experiments},
   ${newRelicEndUserHeader}, ${newRelicEndUserFooter}
-  ${clientTopology.<%= simplename %>SslStaticsUrl},
   ${clientTopology.<%= simplename %>StaticsUrl},
   ${clientTopology.staticBaseUrl},
-  ${clientTopology.sslStaticBaseUrl}
 
   More details at: http://kb.wixpress.com/display/dashboard/How+to+integrate+server+with+index.vm
 #end -->
@@ -20,13 +18,8 @@
   #if( !$languages.contains($locale) )
     #set( $locale = "en" )
   #end
-  #if( $secured )
-    #set( $staticsUrl = $clientTopology.<%= simplename %>SslStaticsUrl )
-    #set( $staticBaseUrl = $clientTopology.sslStaticBaseUrl )
-  #else
-    #set( $staticsUrl = $clientTopology.<%= simplename %>StaticsUrl )
-    #set( $staticBaseUrl = $clientTopology.staticBaseUrl )
-  #end
+  #set( $staticsUrl = $clientTopology.<%= simplename %>StaticsUrl )
+  #set( $staticBaseUrl = $clientTopology.staticBaseUrl )
 -->
 <html ng-app="<%= scriptAppName %>">
   <head>

@@ -52,6 +52,19 @@ var Generator = module.exports = function Generator(args, options) {
     this.env.options.coffee = this.options.coffee;
   }
 
+  if (typeof this.env.options.ts === 'undefined') {
+    this.option('ts', {
+      desc: 'Generate TypeScript instead of JavaScript'
+    });
+
+    // attempt to detect if user is using TypeScript or not
+    if (!this.options.ts &&
+      this.expandFiles(path.join(this.appPath, '/scripts/**/*.ts'), {}).length > 0) {
+      this.options.ts = true;
+    }
+    this.env.options.ts = this.options.ts;
+  }
+
   if (typeof this.env.options.minsafe === 'undefined') {
     this.option('minsafe', {
       desc: 'Generate AngularJS minification safe code'
@@ -144,16 +157,16 @@ Generator.prototype.askForModules = function askForModules() {
     message: 'Which super powers would you like?',
     choices: [{
       value: 'none',
-      name: 'none',
+      name: 'none'
     }, {
       value: 'bowerComponent',
-      name: 'bower component',
+      name: 'bower component'
     }, {
       value: 'dashboardApp',
-      name: 'wix-dashboard application',
+      name: 'wix-dashboard application'
     }, {
       value: 'dashboardWidget',
-      name: 'wix-dashboard widget',
+      name: 'wix-dashboard widget'
     }]
   }];
 

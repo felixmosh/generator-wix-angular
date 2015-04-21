@@ -15,10 +15,11 @@ util.inherits(Generator, ScriptBase);
 
 Generator.prototype.rewriteAppJs = function () {
   var coffee = this.env.options.coffee;
+  var typescript = this.env.options.ts;
   var config = {
     file: path.join(
       this.env.options.appPath,
-      'scripts/app.' + (coffee ? 'coffee' : 'js')
+      'scripts/app.' + (coffee ? 'coffee' : ((typescript) ? 'ts' : 'js'))
     ),
     needle: '.otherwise',
     splicable: [
